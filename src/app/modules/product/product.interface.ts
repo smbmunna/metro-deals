@@ -1,6 +1,6 @@
 export type TVariant = [
   {
-    variantType: "color" | "storage";
+    type: "color" | "storage";
     value: any;
   }
 ];

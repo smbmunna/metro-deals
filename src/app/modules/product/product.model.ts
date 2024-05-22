@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { TProduct, TVariant } from "./product.interface";
 
 const variantsSchema = new Schema({
-  variantType: { type: String, enum: ["color", "storage"], required: true },
+  type: { type: String, enum: ["color", "storage"], required: true },
   value: { type: Schema.Types.Mixed, required: true },
 });
 
@@ -12,7 +12,7 @@ const inventorySchema = new Schema({
 });
 
 const productSchema = new Schema<TProduct>({
-  id: { type: String, required: true },
+  id: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, requried: true },
