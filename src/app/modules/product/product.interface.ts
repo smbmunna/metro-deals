@@ -1,7 +1,7 @@
 export type TVariant = [
   {
-    type: "color" | "storage";
-    value: any;
+    type: string;
+    value: string;
   }
 ];
 

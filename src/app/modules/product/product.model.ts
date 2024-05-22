@@ -2,8 +2,8 @@ import { Schema, model } from "mongoose";
 import { TProduct, TVariant } from "./product.interface";
 
 const variantsSchema = new Schema({
-  type: { type: String, enum: ["color", "storage"], required: true },
-  value: { type: Schema.Types.Mixed, required: true },
+  type: { type: String, required: true },
+  value: { type: String, required: true },
 });
 
 const inventorySchema = new Schema({
