@@ -1,22 +1,22 @@
-export type Variant = [
+export type TVariant = [
   {
-    type: "color" | "storage";
-    value: string | number;
+    variantType: "color" | "storage";
+    value: any;
   }
 ];
 
-export type Inventory = {
+export type TInventory = {
   quantity: number;
   inStock: boolean;
 };
 
-export type Product = {
+export type TProduct = {
   id: string;
   name: string;
   description: string;
   price: number;
   category: string;
   tags: "computer" | "peripherals" | "wireless" | "ergonomic";
-  variants: Variant;
-  inventory: Inventory;
+  variants: TVariant;
+  inventory: TInventory;
 };
