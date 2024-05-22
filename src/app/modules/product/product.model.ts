@@ -23,4 +23,10 @@ const productSchema = new Schema<TProduct>({
   isDeleted: { type: Boolean, default: false },
 });
 
+//pre middleware to filter deleted data
+productSchema.pre("find", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
 export const ProductModel = model<TProduct>("Product", productSchema);
