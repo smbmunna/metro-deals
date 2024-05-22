@@ -19,4 +19,5 @@ export type TProduct = {
   tags: "computer" | "peripherals" | "wireless" | "ergonomic";
   variants: TVariant;
   inventory: TInventory;
+  isDeleted: boolean;
 };

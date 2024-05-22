@@ -20,6 +20,7 @@ const productSchema = new Schema<TProduct>({
   tags: ["computer", "peripherals", "wireless", "ergonomic"],
   variants: [variantsSchema],
   inventory: inventorySchema,
+  isDeleted: { type: Boolean, default: false },
 });
 
 export const ProductModel = model<TProduct>("Product", productSchema);
