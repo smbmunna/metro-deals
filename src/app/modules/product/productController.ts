@@ -74,9 +74,33 @@ const deleteASingleProduct = async (req: Request, res: Response) => {
   }
 };
 
+const updateDataById = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.productId;
+    const updatedData = req.body;
+
+    const result = await productServices.updateProductInDB(
+      productId,
+      updatedData
+    );
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: "Cannot update product",
+      error: err,
+    });
+  }
+};
+
 export const ProductControllers = {
   createProduct,
   getAllProducts,
   getASingleProductByID,
   deleteASingleProduct,
+  updateDataById,
 };
