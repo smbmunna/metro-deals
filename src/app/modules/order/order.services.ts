@@ -19,6 +19,9 @@ const createOrderIntoDB = async (order: TOrder) => {
     //reduce product quantity
     reduceQuantity(order.productId, order);
 
+    //update inStock status
+    updateInStock(order.productId);
+
     return result;
   } else {
     return false;
@@ -27,14 +30,27 @@ const createOrderIntoDB = async (order: TOrder) => {
 
 //-------------reduce quantity after ordering
 const reduceQuantity = async (id: string, order: TOrder) => {
-  //console.log(productId);
   const qtyOrd = order.quantity;
   const result = await ProductModel.updateOne(
     { _id: id },
     { $inc: { "inventory.quantity": -qtyOrd } }
   );
-
   return result;
+};
+
+const updateInStock = async (id: string) => {
+  const productObjectId = new Types.ObjectId(id);
+  const orderedProduct = await ProductModel.aggregate([
+    {
+      $match: { _id: productObjectId },
+    },
+  ]);
+
+  const [orderedProductObj] = orderedProduct;
+  const productQty = orderedProductObj.inventory.quantity;
+  if (productQty <= 0) {
+    await ProductModel.updateOne({ _id: id }, { "inventory.inStock": false });
+  }
 };
 
 //---------------get all orders
