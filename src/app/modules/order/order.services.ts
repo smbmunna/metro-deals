@@ -13,7 +13,19 @@ const createOrderIntoDB = async (order: TOrder) => {
       $match: { _id: productIdObject },
     },
   ]);
-  if (foundProduct) {
+
+  //stock check
+  const qtyOrd = order.quantity;
+  const isAvailable = await stockCheck(
+    productIdObject as any,
+    qtyOrd as number
+  );
+  // if (!isAvailable) {
+  //   return { message: "Insufficient quantity available in inventory" };
+  // }
+
+  if (foundProduct && isAvailable) {
+    //create order
     const result = await OrderModel.create(order);
 
     //reduce product quantity
@@ -23,6 +35,17 @@ const createOrderIntoDB = async (order: TOrder) => {
     updateInStock(order.productId);
 
     return result;
+  } else {
+    return { message: "Product not available" };
+  }
+};
+
+//----------------stock check
+const stockCheck = async (id: string, qtyOrd: number) => {
+  const product = await ProductModel.findOne(id as any);
+  const currentStock = product?.inventory.quantity;
+  if ((currentStock as any) > qtyOrd) {
+    return true;
   } else {
     return false;
   }
@@ -38,6 +61,7 @@ const reduceQuantity = async (id: string, order: TOrder) => {
   return result;
 };
 
+//--------------update stock status
 const updateInStock = async (id: string) => {
   const productObjectId = new Types.ObjectId(id);
   const orderedProduct = await ProductModel.aggregate([
@@ -45,7 +69,6 @@ const updateInStock = async (id: string) => {
       $match: { _id: productObjectId },
     },
   ]);
-
   const [orderedProductObj] = orderedProduct;
   const productQty = orderedProductObj.inventory.quantity;
   if (productQty <= 0) {

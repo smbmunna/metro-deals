@@ -6,17 +6,19 @@ const createOrder = async (req: Request, res: Response) => {
   try {
     const order = req.body;
     const result = await OrderServices.createOrderIntoDB(order);
+
     if (result) {
+      //console.log(result);
       res.status(200).json({
         success: true,
-        message: "Order created successfully!",
+        message: "Order created successfully",
         data: result,
       });
     }
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Invalid Product.",
+      message: "Product not Available",
       error: err,
     });
   }

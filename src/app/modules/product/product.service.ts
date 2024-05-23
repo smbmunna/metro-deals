@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { TProduct } from "./product.interface";
 import { ProductModel } from "./product.model";
 
@@ -20,6 +21,7 @@ const getAllProductsFromDB = async (searchTerm: any) => {
         name: {
           $regex: regex,
         },
+        isDeleted: { $ne: true },
       },
     },
   ];
@@ -30,21 +32,31 @@ const getAllProductsFromDB = async (searchTerm: any) => {
 
 //--------------get a single product by ID
 const getASingleProductFromDB = async (id: string) => {
-  const result = await ProductModel.findOne({ id });
+  const productIdObject = new Types.ObjectId(id);
+  const result = await ProductModel.findOne({ _id: productIdObject });
   return result;
 };
 
 //--------------delete a product with id
 const deleteSingleProductFromDB = async (id: string) => {
-  const result = await ProductModel.updateOne({ id }, { isDeleted: true });
+  const productIdObject = new Types.ObjectId(id);
+  const result = await ProductModel.updateOne(
+    { _id: productIdObject },
+    { isDeleted: true }
+  );
   return result;
 };
 
 //---------------Update Product Information
 const updateProductInDB = async (id: string, updatedData: object) => {
-  const result = ProductModel.findOneAndUpdate({ id }, updatedData, {
-    new: true,
-  });
+  const productIdObject = new Types.ObjectId(id);
+  const result = ProductModel.findOneAndUpdate(
+    { _id: productIdObject },
+    updatedData,
+    {
+      new: true,
+    }
+  );
   return result;
 };
 
