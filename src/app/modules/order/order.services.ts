@@ -8,11 +8,10 @@ const createOrderIntoDB = async (order: TOrder) => {
   //check if product id is valid
   const productIdObject = new Types.ObjectId(order.productId);
 
-  const foundProduct = await ProductModel.aggregate([
-    {
-      $match: { _id: productIdObject },
-    },
-  ]);
+  const foundProduct = await ProductModel.findOne(productIdObject as any);
+  if (!foundProduct) {
+    return false;
+  }
 
   //stock check
   const qtyOrd = order.quantity;
@@ -20,9 +19,9 @@ const createOrderIntoDB = async (order: TOrder) => {
     productIdObject as any,
     qtyOrd as number
   );
-  // if (!isAvailable) {
-  //   return { message: "Insufficient quantity available in inventory" };
-  // }
+  if (!isAvailable) {
+    return { success: false, message: "Stock not available" };
+  }
 
   if (foundProduct && isAvailable) {
     //create order
@@ -36,7 +35,7 @@ const createOrderIntoDB = async (order: TOrder) => {
 
     return result;
   } else {
-    return { message: "Product not available" };
+    return { success: false, message: "Stock not available" };
   }
 };
 
