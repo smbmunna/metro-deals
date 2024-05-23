@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { OrderServices } from "./order.services";
 
+//-----------------create an order
 const createOrder = async (req: Request, res: Response) => {
   try {
     const order = req.body;
@@ -20,6 +21,25 @@ const createOrder = async (req: Request, res: Response) => {
   }
 };
 
+//-----------------get all orders
+const getAllOrders = async (req: Request, res: Response) => {
+  try {
+    const result = await OrderServices.getAllOrdersFromDB();
+    res.status(200).json({
+      success: true,
+      message: "Orders fetched successfully!",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Order not found!",
+      error: err,
+    });
+  }
+};
+
 export const OrderController = {
   createOrder,
+  getAllOrders,
 };
