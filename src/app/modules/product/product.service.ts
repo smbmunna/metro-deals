@@ -33,10 +33,28 @@ const updateProductInDB = async (id: string, updatedData: object) => {
   return result;
 };
 
+//--------------Search products
+const searchProductsInDB = async (searchTerm: any) => {
+  const regex = new RegExp(searchTerm, "i");
+  const pipeline = [
+    {
+      $match: {
+        name: {
+          $regex: regex,
+        },
+      },
+    },
+  ];
+
+  const result = await ProductModel.aggregate(pipeline);
+  return result;
+};
+
 export const productServices = {
   createProductIntoDB,
   getAllProductsFromDB,
   getASingleProductFromDB,
   deleteSingleProductFromDB,
   updateProductInDB,
+  searchProductsInDB,
 };
