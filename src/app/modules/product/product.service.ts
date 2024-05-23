@@ -8,8 +8,23 @@ const createProductIntoDB = async (product: TProduct) => {
 };
 
 //---------------get all products
-const getAllProductsFromDB = async () => {
-  const result = await ProductModel.find();
+const getAllProductsFromDB = async (searchTerm: any) => {
+  if (searchTerm == undefined) {
+    const result = await ProductModel.find();
+    return result;
+  }
+  const regex = new RegExp(searchTerm, "i");
+  const pipeline = [
+    {
+      $match: {
+        name: {
+          $regex: regex,
+        },
+      },
+    },
+  ];
+
+  const result = await ProductModel.aggregate(pipeline);
   return result;
 };
 
@@ -34,21 +49,7 @@ const updateProductInDB = async (id: string, updatedData: object) => {
 };
 
 //--------------Search products
-const searchProductsInDB = async (searchTerm: any) => {
-  const regex = new RegExp(searchTerm, "i");
-  const pipeline = [
-    {
-      $match: {
-        name: {
-          $regex: regex,
-        },
-      },
-    },
-  ];
-
-  const result = await ProductModel.aggregate(pipeline);
-  return result;
-};
+//const searchProductsInDB = async (searchTerm: any) => {};
 
 export const productServices = {
   createProductIntoDB,
@@ -56,5 +57,4 @@ export const productServices = {
   getASingleProductFromDB,
   deleteSingleProductFromDB,
   updateProductInDB,
-  searchProductsInDB,
 };
