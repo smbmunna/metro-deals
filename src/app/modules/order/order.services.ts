@@ -13,7 +13,18 @@ const getAllOrdersFromDB = async () => {
   return result;
 };
 
+//----------------get orders by email
+const getOrdersByEmailFromDB = async (email: string) => {
+  const result = await OrderModel.aggregate([
+    {
+      $match: { email: email },
+    },
+  ]);
+  return result;
+};
+
 export const OrderServices = {
   createOrderIntoDB,
   getAllOrdersFromDB,
+  getOrdersByEmailFromDB,
 };
